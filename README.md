@@ -1,3 +1,7 @@
+# 版权说明
+
+原仓库位置 https://github.com/r0ysue/r0capture，感谢大佬的共享精神，此仓库只是个人使用方便进行一些小修改，请大神们移步官方作者git，谢谢！
+
 # r0tracer
 
 安卓Java层多功能追踪脚本
@@ -9,7 +13,7 @@
 
 - 根据黑白名单批量追踪类的所有方法
 
-hook("javax.crypto.Cipher", "$");
+hook("javax.crypto.Cipher", ["$", "anything_else"]);
 
 ![](pic/02.png)
 

@@ -194,7 +194,7 @@ function traceClass(targetClass) {
     }
     console.Green(output);
 }
-function hook(white, black, target = null) {
+function hook(white, blacks, target = null) {
     console.Red("start")
     if (!(target === null)) {
         console.LightGreen("Begin enumerateClassLoaders ...")
@@ -221,11 +221,22 @@ function hook(white, black, target = null) {
     var targetClasses = new Array();
     Java.enumerateLoadedClasses({
         onMatch: function (className) {
-            if (className.toString().toLowerCase().indexOf(white.toLowerCase()) >= 0 &&
-               (black == null || black == '' || className.toString().toLowerCase().indexOf(black.toLowerCase()) < 0)) {
-                console.Black("Found Class => " + className)
-                targetClasses.push(className);
-                traceClass(className);
+            if (className.toString().toLowerCase().indexOf(white.toLowerCase()) >= 0) {
+                var isBlack = false;
+                if (blacks != null && blacks.length > 0) {
+                    for (var i = 0; i < blacks.length; i++) {
+                        if (blacks[i] == null) continue;
+                        if (className.toString().toLowerCase().indexOf(blacks[i].toLowerCase()) >= 0) {
+                            isBlack = true;
+                            break;
+                        }
+                    }
+                }
+                if (!isBlack) {
+                    console.Black("Found Class => " + className)
+                    targetClasses.push(className);
+                    traceClass(className);
+                }
             }
         }, onComplete: function () {
             console.Black("Search Class Completed!")
@@ -249,7 +260,7 @@ function main() {
         //A. 简易trace单个函数
         traceClass("javax.crypto.Cipher")
         //B. 黑白名单trace多个函数，第一个参数是白名单(包含关键字)，第二个参数是黑名单(不包含的关键字)
-        // hook("javax.crypto.Cipher", "$");
+        // hook("javax.crypto.Cipher", ["$", "black"]);
         //C. 报某个类找不到时，将某个类名填写到第三个参数，比如找不到com.roysue.check类。（前两个参数依旧是黑白名单）
         // hook("com.roysue.check"," ","com.roysue.check");        
     })
